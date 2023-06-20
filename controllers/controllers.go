@@ -1,17 +1,17 @@
 package controllers
 
 import (
-	"errors"
 	"net/http"
 
 	"go-rest-api/data"
+	"go-rest-api/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 // * Controller to get todos
 func GetTodos(c *gin.Context){
-	c.IndentedJSON(http.StatusOK, data.Todos)
+	c.IndentedJSON(http.StatusOK, services.FetchTodosService())
 }
 
 // * Controller to add todo
@@ -21,14 +21,14 @@ func AddTodo(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, err);
 		return
 	}
-	data.Todos = append(data.Todos, newTodo)
+	services.AddTodoService(newTodo)
 	c.IndentedJSON(http.StatusCreated, newTodo)
 }
 
 // * Controller to toggle todo
 func ToggleTodo(c *gin.Context){
 	id := c.Param("id");
-	todo, err := getTodoByID(id);
+	todo, err := services.GetSingleTodo(id);
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Todo not found"});
 		return;
@@ -40,20 +40,10 @@ func ToggleTodo(c *gin.Context){
 // * Controller to get single todo
 func GetTodo(c *gin.Context){
 	id := c.Param("id");
-	todo, err := getTodoByID(id);
+	todo, err := services.GetSingleTodo(id);
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Todo not found"});
 		return
 	}
 	c.IndentedJSON(http.StatusOK, todo)
-}
-
-// * Handler to loop through todo slice
-func getTodoByID(id string) (*data.Todo, error) {
-	for i, todo := range data.Todos {
-		if todo.ID == id {
-			return &data.Todos[i], nil
-		}
-	}
-	return nil, errors.New("Todo not found!")
 }
