@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"go-rest-api/constants"
 	"go-rest-api/data"
 )
 
@@ -19,5 +20,5 @@ func GetSingleTodo (id string) (*data.Todo, error){
 			return &data.Todos[i], nil
 		}
 	}
-	return nil, errors.New("Todo not found!")
+	return nil, errors.New(constants.Todo404Msg)
 }

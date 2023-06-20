@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 
+	"go-rest-api/constants"
 	"go-rest-api/data"
 	"go-rest-api/services"
 
@@ -30,7 +31,7 @@ func ToggleTodo(c *gin.Context){
 	id := c.Param("id");
 	todo, err := services.GetSingleTodo(id);
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Todo not found"});
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": constants.Todo404Msg});
 		return;
 	}
 	todo.Completed = !todo.Completed
@@ -42,7 +43,7 @@ func GetTodo(c *gin.Context){
 	id := c.Param("id");
 	todo, err := services.GetSingleTodo(id);
 	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Todo not found"});
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": constants.Todo404Msg});
 		return
 	}
 	c.IndentedJSON(http.StatusOK, todo)
